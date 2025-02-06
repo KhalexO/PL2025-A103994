@@ -4,8 +4,9 @@
 
 - **Nome:** [Alexandre Arantes Dias]
 - **Número:** A103994
+<br>
 ![Foto](foto/Alexandre.png)
 
 ## Descrição
-Este repositório contém os trabalhos de casa (TPC) da unidade curricular **PL2025. Cada um está organizado numa pasta própria e inclui um relatório com detalhes sobre o TPC.
+Este repositório contém os trabalhos de casa (TPC) da unidade curricular **PL2025**. Cada um está organizado numa pasta própria e inclui um relatório com detalhes sobre o TPC.
 
