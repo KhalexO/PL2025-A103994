@@ -2,7 +2,7 @@
 
 ## Autor
 
-- **Nome:** [Alexandre Arantes Dias]
+- **Nome:** Alexandre Arantes Dias
 - **Número:** A103994
 - ![Foto](foto/Alexandre.png)
 
