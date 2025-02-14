@@ -1,3 +1,11 @@
+def process_file(filename):
+    try:
+        with open(filename, 'r', encoding='utf-8') as file:
+            text = file.read()
+            process_text(text)
+    except FileNotFoundError:
+        print(f"Erro: O ficheiro '{filename}' não foi encontrado.")
+
 def process_text(text):
     total = 0
     enabled = True
@@ -22,5 +30,4 @@ def process_text(text):
         else:
             index += 1
 
-test_text = "12 abc ON 34 off 56 ON 7= off 8 9 = ON 10 ="
-process_text(test_text)
+process_file('texto.txt')

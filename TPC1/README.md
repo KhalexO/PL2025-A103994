@@ -13,5 +13,5 @@ Esta pasta diz respeito ao TPC1. Neste TPC foi desenvolvido um Somador on/off qu
 
 ## Lista de resultados 
 
-Este TPC foi desenvolvido no ficheiro [main.py](main.py) presente na pasta **TPC1**.
+Este TPC foi desenvolvido no ficheiro [main.py](main.py) presente na pasta **TPC1**. O somador utilizará o texto da pasta **texto.txt** como exemplo.
 
