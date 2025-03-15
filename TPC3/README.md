@@ -22,4 +22,3 @@ O conversor suporta a conversão dos seguintes elementos Markdown:
 - **Imagens:** `![texto alternativo](URL da imagem)`
 
 Este TPC foi desenvolvido no ficheiro [main.py](main.py) presente na pasta **TPC3**. O programa lê um ficheiro Markdown de entrada e gera um ficheiro HTML correspondente como saída.
-

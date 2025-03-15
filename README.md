@@ -8,4 +8,3 @@
 
 ## Descrição
 Este repositório contém os trabalhos de casa (TPC) da unidade curricular **PL2025**. Cada um está organizado numa pasta própria e inclui um relatório com detalhes sobre o TPC.
-

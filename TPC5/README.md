@@ -21,4 +21,3 @@ Este TPC foi desenvolvido no ficheiro [main.py](main.py) presente na pasta **TPC
 - `SAIR` → Devolve o troco e termina o programa
 
 O troco é calculado automaticamente, devolvendo sempre as moedas de maior valor primeiro.
-

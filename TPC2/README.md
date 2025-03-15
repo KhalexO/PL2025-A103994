@@ -14,4 +14,3 @@ Esta pasta diz respeito ao TPC2. Neste TPC, foi feita a análise de um dataset d
 ## Lista de resultados  
 
 Este TPC foi desenvolvido no ficheiro [main.py](main.py) presente na pasta **TPC2**. O programa lê o dataset, processa-o e extrai informações relevantes sobre as obras musicais contidas no ficheiro.
-
