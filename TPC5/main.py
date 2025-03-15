@@ -1,14 +1,11 @@
 import json
 import re
 
-# Nome do ficheiro JSON
 FILENAME = "stock.json"
 
-# Definir valores de moedas e lista ordenada para dar troco corretamente
 VALORES_MOEDAS = {"2e": 200, "1e": 100, "50c": 50, "20c": 20, "10c": 10, "5c": 5, "2c": 2, "1c": 1}
 MOEDAS_ORDENADAS = sorted(VALORES_MOEDAS.items(), key=lambda x: -x[1])
 
-# Carregar stock do ficheiro JSON
 def carregar_stock():
     try:
         with open(FILENAME, "r", encoding="utf-8") as f:
@@ -16,19 +13,16 @@ def carregar_stock():
     except FileNotFoundError:
         return []
 
-# Guardar stock atualizado no ficheiro JSON
 def guardar_stock(stock):
     with open(FILENAME, "w", encoding="utf-8") as f:
         json.dump(stock, f, indent=4)
 
-# Listar os produtos disponíveis
 def listar_produtos(stock):
     print("maq:\ncod | nome | quantidade | preço")
     print("-" * 40)
     for produto in stock:
         print(f"{produto['cod']} {produto['nome']} {produto['quant']} {produto['preco']}€")
 
-# Converter moedas para cêntimos
 def parse_moedas(entrada):
     padrao_moeda = re.compile(r"^\s*(\d+[ec])\s*$", re.IGNORECASE)
     moedas = entrada.lower().split(",")
@@ -48,7 +42,6 @@ def parse_moedas(entrada):
 
     return saldo
 
-# Selecionar produto
 def selecionar_produto(stock, saldo, codigo):
     for produto in stock:
         if produto["cod"] == codigo:
@@ -70,7 +63,6 @@ def selecionar_produto(stock, saldo, codigo):
     print("maq: Código inválido!")
     return saldo
 
-# Calcular troco em moedas
 def calcular_troco(saldo):
     troco = []
     for moeda, valor in MOEDAS_ORDENADAS:
@@ -81,7 +73,6 @@ def calcular_troco(saldo):
 
     return ", ".join(troco) if troco else None
 
-# Função principal
 def main():
     stock = carregar_stock()
     saldo = 0
