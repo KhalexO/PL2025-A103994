@@ -278,3 +278,193 @@ A Tabela de Símbolos usada vai guardas os seguintes parametros:
 - Boundaries, se array (por exemplo, `array[1..5]` tem `bound(1,5)`) 
 
 ---
+
+# ILGenerator - Gerador de Código Intermediário (IL)
+
+A classe `ILGenerator` é responsável por gerar o código intermediário (IL - Intermediate Language) a partir da Árvore Sintática Abstrata (AST) do programa. Ela transforma os nós da AST em instruções simples que podem ser usadas para posterior interpretação ou compilação.
+
+---
+
+## Atributos principais
+
+- `temp_count`  
+  Contador para gerar nomes únicos de variáveis temporárias (`t0`, `t1`, ...).
+
+- `label_count`  
+  Contador para gerar rótulos únicos para controle de fluxo (`L0`, `L1`, ...).
+
+- `main_instr`  
+  Lista de instruções do bloco principal do programa.
+
+- `func_instr`  
+  Lista de instruções das funções definidas.
+
+- `instructions`  
+  Referência atual para a lista de instruções onde as próximas instruções serão adicionadas (inicialmente aponta para `main_instr`).
+
+- `global_scope`  
+  Informações do escopo global (lista de declarações de funções).
+
+- `array_access_cache`  
+  Cache para otimizar o acesso a arrays e evitar geração redundante de código para o mesmo índice.
+
+## Métodos principais
+
+### Geradores de temporários e rótulos
+
+- `new_temp()`  
+  Retorna uma nova variável temporária única (`tX`).
+
+- `new_label()`  
+  Retorna um novo rótulo único (`LX`).
+
+### Emissão de instruções
+
+- `emit(op, arg1='', arg2='', res='')`  
+  Adiciona uma instrução à lista atual, na forma `(op, arg1, arg2, res)`.
+
+### Geração recursiva de código a partir da AST
+
+- `generate(node)`  
+  Método principal que, dado um nó AST ou lista de nós, despacha para o método específico de geração conforme o tipo do nó (`gen_<tipo>`).
+
+## Métodos de geração para tipos específicos de nós
+
+- `gen_program(node)`  
+  Gera o código do programa principal e concatena o código das funções ao final.
+
+- `gen_block(node)`  
+  Gera o código do bloco, geralmente executando o último comando.
+
+- `gen_statement_list(node)`  
+  Gera o código de uma lista de comandos.
+
+- `gen_expression(node)`  
+  Gera código para expressões.
+
+- `gen_var(node)`  
+  Geração de código para declaração de variável (retorna `None` por padrão).
+
+- `gen_assign(node)`  
+  Gera código para atribuição: avalia a expressão e emite um comando `ASSIGN`.
+
+- `gen_op(node)`  
+  Gera código para operações binárias e lógicas, usando mapeamento para instruções IL.
+
+- `gen_not(node)`  
+  Gera código para operação lógica de negação.
+
+- `gen_element(node)`  
+  Avalia elementos simples, como identificadores, constantes (inteiro, real, string, booleano).
+
+- `gen_boolean(node)`  
+  Avalia valores booleanos em 0/1.
+
+- `gen_array_access(node)`  
+  Gera código para acesso a elementos de arrays, usando cache para otimização.
+
+- `gen_if(node)`  
+  Gera código para comando condicional `if-else` com rótulos.
+
+- `gen_while(node)`  
+  Gera código para laço `while` com rótulos de início e fim.
+
+- `gen_repeat(node)`  
+  Gera código para laço `repeat-until`.
+
+- `gen_for(node)`  
+  Gera código para laço `for` com incremento/decremento e controle de fluxo.
+
+- `gen_function(node)`  
+  Gera código para declaração de função, alternando para a lista `func_instr`.
+
+- `gen_function_call_inline(node)`  
+  Gera código para chamada de função que retorna valor, incluindo tratamento especial para funções embutidas (ex: `length`).
+
+- `gen_function_call(node)`  
+  Gera código para chamada de função sem retorno direto (void).
+
+- `gen_readln(node)`  
+  Gera código para leitura de entrada, com tratamento especial para arrays.
+
+- `gen_writeln(node)`  
+  Gera código para impressão de valores na saída.
+
+- `gen_sub_declaration_list(node)`  
+  Gera código para lista de declarações auxiliares.
+
+---
+
+# CodeGenerator - Gerador de Código Assembly Simplificado
+
+A classe `CodeGenerator` converte uma lista de instruções intermediárias (IL) em código assembly (ou uma linguagem de baixo nível fictícia), gerenciando índices de variáveis globais e temporárias, além de cuidar dos tipos das variáveis para instruções específicas.
+
+
+## Atributos Principais
+
+- `global_indices`  
+  Dicionário que mapeia variáveis globais para índices únicos.
+
+- `temp_indices`  
+  Dicionário que mapeia variáveis temporárias para índices negativos únicos (ex.: `t0` -> -1, `t1` -> -2).
+
+- `next_global_index`  
+  Próximo índice disponível para variáveis globais.
+
+- `next_temp_index`  
+  Próximo índice negativo disponível para variáveis temporárias.
+
+- `instructions`  
+  Lista das instruções assembly geradas.
+
+- `var_types`  
+  Mapeia variáveis globais para seus tipos (ex.: `integer`, `string`, `float`).
+
+- `temp_var_types`  
+  Mapeia variáveis temporárias para seus tipos inferidos.
+
+## Métodos
+
+### `alloc_globals(symtab_or_list)`
+
+Recebe uma tabela de símbolos ou lista delas e aloca índices para variáveis globais, registrando seus tipos.
+
+
+### `emit(line: str)`
+
+Adiciona uma linha de instrução ao código gerado.
+
+
+
+### `get_temp_index(name: str) -> int`
+
+Retorna o índice negativo único para uma variável temporária, criando se necessário.
+
+### `translate(il_list: list, global_symtab_list) -> list`
+
+Tradução principal: dado o código intermediário (IL) e tabelas de símbolos globais, gera as instruções em linguagem de baixo nível.
+
+- Inicializa variáveis globais.
+- Processa cada instrução IL, gerando um ou mais comandos assembly correspondentes.
+- Lida com operações aritméticas, lógicas, atribuições, chamadas de função, controle de fluxo, leitura e escrita.
+- Atualiza o tipo das variáveis temporárias conforme as operações realizadas.
+- Trata chamadas especiais para funções embutidas `writeln` e `readln`.
+- Gera comandos como `PUSHI`, `PUSHS`, `PUSHG`, `PUSHL`, `STOREG`, `STOREL`, `CALL`, `JUMP`, `JZ`, entre outros.
+
+
+### `load_operand(src: str)`
+
+Gera o código para carregar um operando na pilha:
+
+- Constantes inteiras (`PUSHI`)
+- Literais string (`PUSHS`)
+- Variáveis globais (`PUSHG`)
+- Variáveis temporárias (`PUSHL`)
+
+
+### `store_operand(name: str)`
+
+Gera o código para armazenar o topo da pilha em uma variável:
+
+- Globais (`STOREG`)
+- Temporárias (`STOREL`)

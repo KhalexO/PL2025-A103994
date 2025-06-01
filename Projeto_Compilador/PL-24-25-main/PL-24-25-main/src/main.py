@@ -17,28 +17,16 @@ from CodeGenerator import *
 
 if __name__ == "__main__":
 	
-	test_code = """
-program NumeroPrimo;
-var
-    num, i: integer;
-    primo: boolean;
-begin
-    writeln('Introduza um número inteiro positivo:');
-    readln(num);
-    primo := true;
-    i := 2;
-    while (i <= (num div 2)) and primo do
-        begin
-            if (num mod i) = 0 then
-                primo := false;
-            i := i + 1;
-        end;
-    if primo then
-        writeln(num, ' é um número primo')
-    else
-        writeln(num, ' não é um número primo')
-end.
-	"""	
+	source_path = sys.argv[1]
+
+	try:
+		with open(source_path, 'r', encoding='utf-8') as f:
+			test_code = f.read()
+	except Exception as e:
+		print(f"Failed to read source file: {e}")
+		sys.exit(1)
+		
+        
 	# lexer
 	lexer = lex.lex()
 	lexer.input( test_code )
